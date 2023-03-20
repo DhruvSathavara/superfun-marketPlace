@@ -8,7 +8,7 @@ import { posts } from "../lensprotocol/post/get-post";
 import { getPublicationByLatest } from "../lensprotocol/post/explore/explore-publications";
 import { toast } from "react-toastify";
 import { profileByAddress } from "../lensprotocol/profile/get-profile";
-import { collectedPubByAddress, getNFTCommentsByLatest, getNFTMirrorByLatest, getNFTPublicationByLatest } from "../lensprotocol/MarketPlace/getNftPost/GetNftPost";
+import { collectedPubByAddress, getNFTCommentsByLatest, getNFTMirrorByLatest, getNftPostByPubId, getNFTPublicationByLatest } from "../lensprotocol/MarketPlace/getNftPost/GetNftPost";
 
 export const LensAuthContext = createContext(undefined); 
 export const LensAuthContextProvider = (props) => { 
@@ -16,10 +16,11 @@ export const LensAuthContextProvider = (props) => {
   const [userAdd, setUserAdd] = useState("");
   const [profile, setProfile] = useState("");
   const [update, setUpdate] = useState(false);
+  const [likeUpdate, setLikeUpdate] = useState(false);
   const [userPosts, setUserPosts] = useState([]); 
   const [NFTPosts, setNFTPosts] = useState([]); 
   const [NFTCollected, setNFTCollected] = useState([]); 
-  console.log(NFTCollected);
+  console.log(NFTCollected,'nft coll');
   const [NFTComments, setNFTComments] = useState([]); 
   const [NFTMirroredPost, setNFTMirroredPosts] = useState([]); 
   const id = window.localStorage.getItem("profileId");
@@ -42,7 +43,6 @@ export const LensAuthContextProvider = (props) => {
         setNFTMirroredPosts(nftMirror);
 
         const collects = await collectedPubByAddress()
-        console.log(collects);
         let arr = []
         for (let i = 0; i < collects[0].length; i++) {
           
@@ -51,7 +51,6 @@ export const LensAuthContextProvider = (props) => {
           }
         }
         setNFTCollected(arr);
-
       }
 
     };
@@ -59,7 +58,9 @@ export const LensAuthContextProvider = (props) => {
     getPosts();
   }, [userAdd, update,updatePro]);
 
+ useEffect(() => {
 
+ },[likeUpdate]) 
   async function getPosts() {
     let array = [];
     const post =  await posts(id); 
@@ -246,7 +247,8 @@ export const LensAuthContextProvider = (props) => {
         setOpen,
         NFTPosts,
         NFTComments,
-        NFTMirroredPost
+        NFTMirroredPost,
+        NFTCollected
       }}
       {...props}
     >

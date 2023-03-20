@@ -146,3 +146,33 @@ color: #eee;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+
+.mainCard {
+  overflow-x: hidden !important;
+  height: 100%;
+  border-radius: 10px;
+  border: 1px solid rgb(68, 68, 68);
+  background-color: rgb(34, 34, 34);
+    cursor: pointer;
+}
+
+
+/* displayNftpost */
+.test-class p {
+  font-size: 14px;
+  color: #fff;
+  margin: 0;
+}
+.test-class {
+  border: 1px solid #808080;
+  border-radius: 12px;
+  margin: -10px 10px;
+}
+.test-class span {
+  font-size: 13px;
+  color: #808080;
+}
+.test-class div {
+  padding: 5px;
+}

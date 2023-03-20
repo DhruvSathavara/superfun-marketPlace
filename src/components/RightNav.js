@@ -11,17 +11,17 @@ import UserListView from './Lists/UserListView';
 
 export default function RightNav() {
     const [Items, setItems] = useState([]);
-    const [isFetching, setIsFetching] = useState(false); 
+    const [isFetching, setIsFetching] = useState(false);
     const [update, setUpdate] = useState(false);
     const lensAuthContext = React.useContext(LensAuthContext);
-    const {updatePro} = lensAuthContext;
+    const { updatePro } = lensAuthContext;
 
-   
+
 
 
     useEffect(() => {
         loadMoreItems();
-    }, [updatePro]) 
+    }, [updatePro])
 
 
     async function loadMoreItems() {
@@ -30,7 +30,7 @@ export default function RightNav() {
 
             setItems((prevTitles) => {
                 return [...new Set([prevTitles, ...res.recommendedProfiles.map((b) => b)])];
-            }); 
+            });
             setIsFetching(false);
         })
             .catch((e) => {
@@ -45,9 +45,9 @@ export default function RightNav() {
     return (
         <>
             <div><p style={{ textAlign: "left" }}>Recommended Profile</p></div>
-            <div className='container rightnav'> 
+            <div className='container rightnav'>
                 {
-                  !isFetching &&  Items && Items.slice(1,10).map((e, i) => {
+                    !isFetching && Items && Items.slice(1, 8).map((e, i) => {
                         return (
                             < UserListView e={e} key={i} index={i} update={update} setUpdate={setUpdate} />
                         )
@@ -70,7 +70,7 @@ export default function RightNav() {
                         )
                     })
                 }
-                
+
             </div>
 
         </>

@@ -208,11 +208,9 @@ export default function ReporrtModal({ pubId,data }) {
                 </Dialog>
             </div>
         </MenuItem>
-        <MenuItem>
         {
                     profile?.id === data?.profile?.id  && <MenuItem onClick={()=>handleDeletePublication(data.id)}><IconButton><DeleteIcon style={{ fontSize: "18px" }} /></IconButton><small>Delete</small></MenuItem>
                 }
-        </MenuItem>
         </>
     )
 }

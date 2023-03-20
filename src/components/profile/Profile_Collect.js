@@ -7,6 +7,7 @@ import CollectComponent from '../publications/CollectComponent';
 import MirrorComponent from '../publications/MirrorComponent'; 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
+import { collectedPubByAddress } from '../../lensprotocol/MarketPlace/getNftPost/GetNftPost';
 
 function Profile_Collect(props) { 
     const navigate = useNavigate();
@@ -21,7 +22,8 @@ function Profile_Collect(props) {
     }, [props.user])
 
     async function getComments() {
-        const data = await postsByMirror(props.user.id)  
+        console.log('in get com');
+        const data = await collectedPubByAddress(props.user.id)  
         setData(data.data.publications.items);
     }
 

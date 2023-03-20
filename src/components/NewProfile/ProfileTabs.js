@@ -14,11 +14,7 @@ import New_Profile_Comment from './New_Profille_Comment';
 import New_Profile_Mirror from './New_Profile_Mirror';
 import New_Profile_Collect from './New_Profile_Collect';
 import PostCard from '../Cards/PostCard';
-
-import { posts, postsByprofile } from '../../lensprotocol/post/get-post';
-import useInfiniteScroll from '../useInfiniteScroll';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import NftCollectedInProfile from './New_Profile_Nft';
 
 
 function TabPanel(props) {
@@ -55,14 +51,14 @@ function a11yProps(index) {
 }
 
 export default function ProfileTabs({ id, state }) {
-   
-    const [value, setValue] = React.useState(0); 
+
+    const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
-    }; 
+    };
 
     return (
-        <> 
+        <>
             <Box sx={{ width: '100%' }}>
                 <Divider flexItem orientation="vertical" style={{ margin: '0 0px' }} />
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -81,9 +77,15 @@ export default function ProfileTabs({ id, state }) {
                             iconPosition="start" className='profile-tab'
                             label={`(${state.totalCollects})`}
                             {...a11yProps(3)} />
+
+
+                        <Tab icon={< LibraryAddOutlinedIcon />}
+                            iconPosition="start" className='profile-tab'
+                            // label={`(${state.totalCollects})`}
+                            {...a11yProps(4)} />
                     </Tabs>
                 </Box>
-                <TabPanel value={value} index={0}> 
+                <TabPanel value={value} index={0}>
                     <New_Profile_Post id={id} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
@@ -94,6 +96,12 @@ export default function ProfileTabs({ id, state }) {
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                     <New_Profile_Collect id={id} />
+                </TabPanel>
+                <TabPanel
+                    value={value}
+                    index={4}
+                >
+                    <NftCollectedInProfile />
                 </TabPanel>
             </Box>
         </>

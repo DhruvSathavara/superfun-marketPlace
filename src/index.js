@@ -20,6 +20,7 @@ import TrendingDetails from './components/DetailPages/TrendingDetails'
 import NewProfile from './components/NewProfile/NewProfile';
 import Header from './components/header/Header';
 import NewdisplayPublication from './components/Marketplace/NFTPost/DisplayNftPost';
+import NftDetailPage from './components/Marketplace/DetailPage/detailPage';
 
 let darkTheme = createTheme({
   palette: {
@@ -72,6 +73,8 @@ root.render(
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/newprofile/:id" element={<NewProfile />} />
             <Route path="/marketplace" element={<NewdisplayPublication/>} />
+            {/* <Route path="/marketplace" element={<NftDetailPage/>} /> */}
+            <Route path="/detail/:id" element={<NftDetailPage/>} />
 
             <Route path="/trendingDetails/:id" element={<TrendingDetails />} />
             {/* <Route path="/contestDetails/:id" element={<ContestDetails />} /> */}

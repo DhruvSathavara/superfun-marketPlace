@@ -228,7 +228,16 @@ export const createNftPostViaDis = async (postData) => {
             profileId,
             contentURI: `https://superfun.infura-ipfs.io/ipfs/${ipfsResult.path}`,
             collectModule: {
-                freeCollectModule: { followerOnly: true },
+                limitedFeeCollectModule: {
+                    collectLimit:postData.noOfNFTs,
+                    amount: {
+                        currency: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
+                        value: postData.amount
+                    },
+                    recipient: address,
+                    referralFee: 0,
+                    followerOnly: false
+                }
             },
             referenceModule: {
                 followerOnlyReferenceModule: false
