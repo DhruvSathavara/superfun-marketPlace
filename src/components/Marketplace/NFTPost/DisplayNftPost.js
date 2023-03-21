@@ -23,27 +23,33 @@ export default function NewdisplayPublication() {
     const [HasMore, setHasMore] = useState(true);
     const skele = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     return (
-        <>            <div className='container'>
-            <div style={{ margin: "0 7%" }}>
-                <Box sx={{ overflowY: 'hidden', marginTop: '7%' }} >                        <ImageList variant="masonry" cols={greaterThanMid && 3 || smallToMid && 2 || lessThanSmall && 1 || xsmall && 1} gap={0}>                            {
-                    NFTPosts.length === 0 && skele.map((e, i) => {
-                        return (
-                            <LoadingCard key={i} data={e} />)
-                    })
-                }
-                    {
-                        <ImageListItem style={{ cursor: 'pointer' }}>                                    {
-                            NFTPosts && NFTPosts.map((pub) => {
-                                if (pub.__typename === "Post") {
+        <>
+            <div className='container'>
+                <div style={{ margin: "0 7%" }}>
+                    <Box sx={{ overflowY: 'hidden', marginTop: '7%' }} >
+                        <ImageList variant="masonry" cols={greaterThanMid && 3 || smallToMid && 2 || lessThanSmall && 1 || xsmall && 1} gap={0}>
+                            {
+                                NFTPosts.length === 0 && skele.map((e, i) => {
                                     return (
-                                        <DisplayPublications pub={pub} />)
-                                }
-                            })
-                        }
-                        </ImageListItem>}
-                </ImageList>
-                </Box>
+                                        <LoadingCard key={i} data={e} />)
+                                })
+                            }
+                            {
+                                NFTPosts && NFTPosts.map((pub, i) => {
+                                    if (pub.__typename === "Post") {
+                                        return (
+                                            <ImageListItem
+                                                key={i}
+                                            >
+                                                <DisplayPublications key={i} pub={pub} />
+                                            </ImageListItem>
+                                        )
+                                    }
+                                })
+                            }
+                        </ImageList>
+                    </Box>
+                </div>
             </div>
-        </div>
         </>);
 }

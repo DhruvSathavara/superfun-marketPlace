@@ -24,6 +24,7 @@ import { whoCollected } from "../../../lensprotocol/post/collect/collect";
 import CustomizedTables from "./WhoCollectedTable";
 import { deletePublicaton } from "../../../lensprotocol/MarketPlace/deletePost/delete-publication-type-data";
 import CommentComponentNFT from "../../publications/CommentComponent-NFT";
+import { getNFTCommentsByLatest } from "../../../lensprotocol/MarketPlace/getNftPost/GetNftPost";
 function NftDetailPage() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [pubData, setPubData] = React.useState(null);
@@ -38,7 +39,6 @@ function NftDetailPage() {
     const [showComment, setShowComment] = useState(false);
     const [style, setStyle] = useState("");
     const [updateMirror, setUpdateMirror] = useState(false);
-
 
     useEffect(() => {
 
@@ -57,6 +57,10 @@ function NftDetailPage() {
             const whoCollecte = await whoCollected(id);
             // console.log(whoCollecte);
             setWhoCollectData(whoCollecte);
+
+            const nftComment = await getNFTCommentsByLatest(id);
+            console.log(nftComment, 'nft cmts');
+
         }
 
     }, [pid, update])
@@ -167,42 +171,15 @@ function NftDetailPage() {
         setUpdate(!update);
         handleClose();
     }
-
+    const handleShowComment = (id) => {
+        setStyle(id);
+        setShowComment(!showComment);
+    };
     return (
         <>
             <Box className='footer-position' sx={{ marginTop: { sx: '20px', sm: '50px', md: '100px' }, marginBottom: { sx: '20px', sm: '50px', md: '100px' } }}>
                 <div className='container'>
                     <div className='row mt-5'>
-
-                        {/* <div className='col-12 col-sm-8 col-md-8 col-lg-8' style={{ margin: '10px 0' }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                <CircularProgress />
-                            </Box>
-
-                            <Card sx={{ m: 2 }}>
-                                <CardHeader
-                                    avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />
-                                    }
-                                    title={<Skeleton
-                                        animation="wave"
-                                        height={10}
-                                        width="80%"
-                                        style={{ marginBottom: 6 }}
-                                    />
-                                    }
-                                    subheader={<Skeleton animation="wave" height={10} width="40%" />}
-                                />
-                                <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-                                <CardContent>
-                                <React.Fragment>
-                                    <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-                                    <Skeleton animation="wave" height={10} width="80%" />
-                                </React.Fragment>
-
-                                </CardContent>
-                            </Card>
-                        </div> */}
-
 
                         <div className='col-12 col-sm-8 col-md-8 col-lg-8' style={{ margin: '10px 0' }}>
                             <Card>
@@ -297,38 +274,50 @@ function NftDetailPage() {
 
                                 </div>
 
-                                <CardActions disableSpacing className="justify-content-around">
+                                <CardActions disableSpacing className="justify-content-around mt-3">
                                     <IconButton aria-label="add to favorites"
                                         onClick={() => addReactions(pubData)}
                                     >                                        {
-                                            likeUp === 0 ? <FavoriteIcon /> : <FavoriteIcon />}
-                                        {likeCount}
+                                            likeUp === 0 ? <FavoriteIcon  style={{fontSize:"20px"}} /> : <FavoriteIcon  style={{fontSize:"20px"}}/>}
+                                       <sapn style={{fontSize:"20px"}}>{likeCount}</sapn> 
                                     </IconButton>
-                                    <IconButton aria-label="share">
-                                        <div>
-                                            <IconButton
-                                            // onClick={handleClickOpen}
-                                            >
-                                                {
-                                                    likeUp === 0 ? <ChatIcon /> : <ChatIcon />}{pubData?.stats?.totalAmountOfComments}
-                                            </IconButton>
-
-                                        </div>
-                                    </IconButton>
+                                    <div
+                                        onClick={() => handleShowComment(pubData.id)}
+                                        className="d-flex align-items-center"
+                                        style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
+                                    >
+                                        < ModeCommentOutlinedIcon style={{ fontSize: '20px' }} />
+                                        <span style={{ fontSize: '20px' }}>
+                                            {pubData && pubData?.stats?.totalAmountOfComments}
+                                        </span>
+                                    </div>
                                     <IconButton onClick={Mirror}>
-                                        {likeUp === 0 ? <SwapHorizIcon /> : <SwapHorizIcon />}{pubData?.stats?.totalAmountOfMirrors}
+                                        {likeUp === 0 ? <SwapHorizIcon  style={{fontSize:"20px"}} /> : <SwapHorizIcon  style={{fontSize:"20px"}} />}{pubData?.stats?.totalAmountOfMirrors}
                                     </IconButton>
 
                                     <IconButton onClick={Collect}>
-                                        {likeUp === 0 ? <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="24" /> : <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="24" />}{pubData?.stats?.totalAmountOfCollects}
+                                        {likeUp === 0 ? <img
+                                            src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="22" />
+                                            : <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy'
+                                                alt='bg' width="22" />}
+                                       <sapn style={{fontSize:"20px"}}> {pubData?.stats?.totalAmountOfCollects}</sapn>  
                                     </IconButton>
 
                                 </CardActions>
-                                <Divider flexItem orientation="horizontal" style={{ border: '1px solid white' }} />
 
-                                {
-                                    showComment && style === pubData.id && <CommentComponentNFT show={showComment} profile={profile} data={pubData} updateMirror={updateMirror} setUpdateMirror={setUpdateMirror} />
-                                }
+                                <Divider flexItem orientation="horizontal"
+                                    style={{ border: '1px solid white' }} />
+                                <div>
+                                    {
+                                        showComment &&
+                                        <CommentComponentNFT
+                                            show={showComment}
+                                            profile={profile}
+                                            data={pubData}
+                                            updateMirror={updateMirror}
+                                            setUpdateMirror={setUpdateMirror} />}
+                                </div>
+
                             </Card>
 
                             <Box sx={{ width: '100%', height: 'auto', overflowY: 'scroll', marginTop: '4%' }}>

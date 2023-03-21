@@ -160,13 +160,11 @@ export const addReactionNft = async (data) => {
 
     await data.login(data.address);
 
-    const request = {
-      profileId: profileId,
+    const result = await addReactionRequest({
+      profileId:profileId,
       reaction: "UPVOTE",
       publicationId: data.publishId
-    };
-
-    const result = await addReactionRequest(request);
+    })
     console.log('result', result);
 
   } catch (error) {
@@ -203,7 +201,6 @@ const removeReactionRequest = (request) => {
 
 
 export const removeReactionNft = async (data) => {
-  console.log('removeReaction==!!!!!!', data);
   const profileId = window.localStorage.getItem("profileId");
   console.log('profileId', profileId);
   if (!profileId) {

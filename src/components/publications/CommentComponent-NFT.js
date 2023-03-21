@@ -2,14 +2,12 @@ import { Send } from '@mui/icons-material';
 import { Avatar, CircularProgress, Divider, IconButton } from '@mui/material';
 import React, { useState } from 'react'
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { LensAuthContext } from '../../context/LensContext';
 import { commentGaslessNft, DoCommentNft } from '../../lensprotocol/MarketPlace/Comment/DoComment';
 import { getNFTCommentsByLatest } from '../../lensprotocol/MarketPlace/getNftPost/GetNftPost';
 
 function CommentComponentNFT({ show, profile, data, updateMirror, setUpdateMirror }) {
     console.log('data-----', data);
-    console.log('profile', profile);
     const [comment, setComments] = useState("");
     const [loading, setLoading] = useState(false);
     const [displayCmt, setDisplayCmt] = useState([]);
@@ -18,16 +16,15 @@ function CommentComponentNFT({ show, profile, data, updateMirror, setUpdateMirro
     const { login, loginCreate } = lensAuthContext;
     const [update, setUpdate] = useState(false);
 
-
     useEffect(() => {
-        // getComm();
+        getComm();
     }, [update])
 
 
     async function getComm() {
         let arr = [];
         const cmt = await getNFTCommentsByLatest(data.id);
-        console.log(cmt,'cmt in detail');
+        console.log(cmt, 'cmt in detail');
         cmt && cmt.map((com) => {
             let obj = {
                 typename: com?.__typename,
@@ -82,35 +79,33 @@ function CommentComponentNFT({ show, profile, data, updateMirror, setUpdateMirro
                     placeholder="Write a comment.."
                     value={comment}
                 />
-                {/* </div> */}
                 <IconButton onClick={commentUpload} >
                     {loading ? <CircularProgress size={20} /> : <Send />}
                 </IconButton>
-                {/* </form> */}
             </div>
 
-            {/* {
+            {
                 data !== undefined && displayCmt && displayCmt.map((e) => {
                     return (
                         <div style={{ margin: '10px' }} key={e.id}>
                             <Divider flexItem orientation="horizontal" />
                             <div className="p-0 d-flex " style={{ padding: '5px', marginTop: '5px' }}>
                                 <Avatar sx={{ width: '24px', height: '24px' }} src={e.avtar !== undefined ? e.avtar : 'https://superfun.infura-ipfs.io/ipfs/QmRY4nWq3tr6SZPUbs1Q4c8jBnLB296zS249n9pRjfdobF'} />
-                                <p style={{ margin: '0 5px', fontSize: '12px' }} className='mb-0 align-self-center'>{e.typename === "Comment" ? e.name : e.name}</p>
+                                <p style={{ margin: '0 5px', fontSize: '13px' }} className='mb-0 align-self-center'>{e.typename === "Comment" ? e.name : e.name}</p>
                             </div>
                             <p style={{
                                 padding: '5px 10px',
                                 background: '#000',
                                 borderRadius: "3px 15px 15px 10px",
                                 margin: '5px 0 0 30px',
-                                fontSize: '10px',
+                                fontSize: '15px',
                                 width: 'fit-content'
                             }}>{e.typename === "Comment" && e.comment}</p>
 
                         </div>
                     )
                 })
-            } */}
+            }
 
         </div>
     )

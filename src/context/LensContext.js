@@ -9,6 +9,7 @@ import { getPublicationByLatest } from "../lensprotocol/post/explore/explore-pub
 import { toast } from "react-toastify";
 import { profileByAddress } from "../lensprotocol/profile/get-profile";
 import { collectedPubByAddress, getNFTCommentsByLatest, getNFTMirrorByLatest, getNftPostByPubId, getNFTPublicationByLatest } from "../lensprotocol/MarketPlace/getNftPost/GetNftPost";
+ 
 
 export const LensAuthContext = createContext(undefined); 
 export const LensAuthContextProvider = (props) => { 
@@ -20,8 +21,7 @@ export const LensAuthContextProvider = (props) => {
   const [userPosts, setUserPosts] = useState([]); 
   const [NFTPosts, setNFTPosts] = useState([]); 
   const [NFTCollected, setNFTCollected] = useState([]); 
-  console.log(NFTCollected,'nft coll');
-  const [NFTComments, setNFTComments] = useState([]); 
+  // console.log(NFTCollected,'nft coll');
   const [NFTMirroredPost, setNFTMirroredPosts] = useState([]); 
   const id = window.localStorage.getItem("profileId");
   const [updatePro,setUpdatePro]= useState(false)
@@ -35,13 +35,8 @@ export const LensAuthContextProvider = (props) => {
         const nftPosts = await getNFTPublicationByLatest();
         setNFTPosts(nftPosts);
 
-        const nftComment = await getNFTCommentsByLatest();
-        // console.log(nftComment);
-        setNFTComments(nftComment);
-
         const nftMirror = await getNFTMirrorByLatest();
         setNFTMirroredPosts(nftMirror);
-
         const collects = await collectedPubByAddress()
         let arr = []
         for (let i = 0; i < collects[0].length; i++) {
@@ -52,6 +47,7 @@ export const LensAuthContextProvider = (props) => {
         }
         setNFTCollected(arr);
       }
+      
 
     };
     getProfile();
@@ -246,7 +242,6 @@ export const LensAuthContextProvider = (props) => {
         open,
         setOpen,
         NFTPosts,
-        NFTComments,
         NFTMirroredPost,
         NFTCollected
       }}

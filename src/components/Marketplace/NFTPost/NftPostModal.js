@@ -31,13 +31,13 @@ import CommentComponent from '../../publications/CommentComponent';
 import SwapHorizSharpIcon from '@mui/icons-material/SwapHorizSharp';
 import CommentComponentNFT from '../../publications/CommentComponent-NFT';
 
-
-export default function DisplayPublications({ pub }) {
+export default function DisplayPublications({ pub,key }) {
     const [pid, setPid] = useState(pub?.id);
     const [likeCount, setLikeCount] = useState(0);
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [likeUp, setLikeUp] = useState(0);
+    const [updateLike, setUpdateLike] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openReport, setOpenReport] = useState(false);
     const [fileType, setFileType] = useState("img")
@@ -52,9 +52,10 @@ export default function DisplayPublications({ pub }) {
 
     const lensAuthContext = React.useContext(LensAuthContext);
     const { profile, login, update, setUpdate } = lensAuthContext;
+
     useEffect(() => {
         getReact();
-    }, [pid, update])
+    }, [updateLike])
 
     const oppen = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -110,7 +111,9 @@ export default function DisplayPublications({ pub }) {
     }
 
     const addReactions = async (data) => {
+
         if (!profile) {
+            alert("Please Login First!");
             return;
         }
         const id = window.localStorage.getItem("profileId");
@@ -124,18 +127,20 @@ export default function DisplayPublications({ pub }) {
         }
         let res;
         if (likeUp === false) {
+            console.log('in add rec');
             res = await addReactionNft(dd);
-
         }
         else {
+            console.log('in remove rec');
             res = await removeReactionNft(dd);
-            console.log('res--removeReaction', res);
 
         }
+        console.log(res);
         if (res === undefined) {
-            setUpdate(!update);
+            setUpdateLike(!updateLike);
         }
     }
+
     const getReact = async () => {
         const res = await getReactionsNft(pid);
 
@@ -150,8 +155,6 @@ export default function DisplayPublications({ pub }) {
         setLikeCount(res.items.length);
     }
 
-
-
     const handleShowComment = (id) => {
         setStyle(id);
         setShowComment(!showComment);
@@ -161,63 +164,63 @@ export default function DisplayPublications({ pub }) {
     return (
         <>
 
-            <div className='container '>
-                    <Card style={{borderRadius:"16px"}} className='mainCard mt-4'>
+            <div className='container ' style={{position:"unset"}}>
+                <Card key={key} style={{ borderRadius: "16px" }} className='mainCard mt-4'>
 
-                        <CardHeader
+                    <CardHeader
 
-                            avatar={
-                                <img style={{ height: "55px", width: "55px", borderRadius: "50%" }}
-                                    src={pub?.profile?.picture?.original?.url}
-                                    alt="new"
-                                />}
-                            action={
-                                <IconButton aria-label="settings"
-                                    id="basic-button"
-                                    aria-controls={oppen ? 'basic-menu' : undefined}
-                                    aria-haspopup="true"
-                                    aria-expanded={oppen ? 'true' : undefined}
-                                    onClick={handleClick}
-                                >
+                        avatar={
+                            <img style={{ height: "55px", width: "55px", borderRadius: "50%" }}
+                                src={pub?.profile?.picture?.original?.url}
+                                alt="new"
+                            />}
+                        action={
+                            <IconButton aria-label="settings"
+                                id="basic-button"
+                                aria-controls={oppen ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={oppen ? 'true' : undefined}
+                                onClick={handleClick}
+                            >
 
-                                    <MoreVertIcon />
-                                </IconButton>
+                                <MoreVertIcon />
+                            </IconButton>
 
-                            }
-                            title={pub?.profile?.handle}
-                            subheader={pub?.profile?.ownedBy?.slice(1, 10)}
+                        }
+                        title={pub?.profile?.handle}
+                        subheader={pub?.profile?.ownedBy?.slice(1, 10)}
+                    />
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={oppen}
+                        onClose={handleCllose}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <ReporrtModal pubId={pub.id}
+                            data={pub}
                         />
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={oppen}
-                            onClose={handleCllose}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <ReporrtModal pubId={pub.id}
-                                data={pub}
-                            />
-                        </Menu>
-                        <img style={{ height: "auto", width: '100%', padding: "0px 10px 10px 10px", borderRadius: "25px" }} src={pub?.metadata?.media[0]?.original?.url} ></img>
-                        <CardContent>
-                            <Typography variant="body2" color="text.secondary">
-                                <span style={{
-                                    fontSize: '16px',
-                                    textTransform: 'capitalize'
-                                }}><b>{pub?.metadata?.content}</b></span>
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <p>{pub?.metadata?.description}</p>
-                            </Typography>
-                        </CardContent>
+                    </Menu>
+                    <img style={{ height: "auto", width: '100%', padding: "0px 10px 10px 10px", borderRadius: "25px" }} src={pub?.metadata?.media[0]?.original?.url} ></img>
+                    <CardContent>
+                        <Typography variant="body2" color="text.secondary">
+                            <span style={{
+                                fontSize: '16px',
+                                textTransform: 'capitalize'
+                            }}><b>{pub?.metadata?.content}</b></span>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            <p>{pub?.metadata?.description}</p>
+                        </Typography>
+                    </CardContent>
 
-                        <Link to={`/detail/${pub.id}`} >
+                    <Link to={`/detail/${pub.id}`} >
 
-                        <div 
-                        style={{marginTop:"-40px"}}
-                        className='d-flex justify-content-around test-class'>
+                        <div
+                            style={{ marginTop: "-40px" }}
+                            className='d-flex justify-content-around test-class'>
 
                             <div>
                                 <p>{pub.stats.totalAmountOfCollects} / {pub.collectModule.collectLimit}</p>
@@ -233,55 +236,53 @@ export default function DisplayPublications({ pub }) {
                                 <p>{pub.stats.totalAmountOfCollects}</p>
                                 <span>Collectors</span>
                             </div>
+                        </div>
+                    </Link>
+
+
+                    <CardActions disableSpacing className="d-flex justify-content-around mt-2">
+                        <div
+                            className="d-flex align-items-center"
+                            style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
+                            onClick={() => addReactions(pub)}
+                        >
+                            {
+                                likeUp === 0 ? <FavoriteBorderIcon style={{ fontSize: '15px' }} /> : <FavoriteIcon style={{ fontSize: '15px' }} />
+                            }
+                            {likeCount}
+                        </div>
+
+                        <div
+                            onClick={() => handleShowComment(pub.id)}
+                            className="d-flex align-items-center"
+                            style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
+                        >
+                            < ModeCommentOutlinedIcon style={{ fontSize: '15px' }} />  {pub && pub.stats.totalAmountOfComments}
 
                         </div>
-                        </Link>
 
 
-                        <CardActions disableSpacing className="d-flex justify-content-around mb-3">
-                            <div
-                                className="d-flex align-items-center"
-                                style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
-                                onClick={() => addReactions(pub)}
-                            >
-                                {
-                                    likeUp === 0 ? <FavoriteBorderIcon style={{ fontSize: '15px' }} /> : <FavoriteIcon style={{ fontSize: '15px' }} />
-                                }
-                                {likeCount}
-                            </div>
+                        <IconButton onClick={Mirror}
+                            style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
+                        >
+                            {likeUp === 0 ? <SwapHorizSharpIcon /> : <SwapHorizSharpIcon />}
+                            {pub?.stats?.totalAmountOfMirrors}
+                        </IconButton>
 
-                            <div
-                                onClick={() => handleShowComment(pub.id)}
-                                className="d-flex align-items-center"
-                                style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
-                            >
-                                < ModeCommentOutlinedIcon style={{ fontSize: '15px' }} />  {pub && pub.stats.totalAmountOfComments}
+                        <IconButton onClick={Collect}
+                            style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
 
-                            </div>
+                        >
+                            {likeUp === 0 ? <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="15" /> : <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="15" />}
+                            {pub?.stats?.totalAmountOfCollects}
+                        </IconButton>
 
-
-                            <IconButton onClick={Mirror}
-                                style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
-
-                            >
-                                {likeUp === 0 ? <SwapHorizSharpIcon /> : <SwapHorizSharpIcon />}
-                                {pub?.stats?.totalAmountOfMirrors}
-                            </IconButton>
-
-                            <IconButton onClick={Collect}
-                                style={{ color: 'white', margin: '0 5px', cursor: 'pointer', fontSize: '15px' }}
-
-                            >
-                                {likeUp === 0 ? <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="15" /> : <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="15" />}
-                                {pub?.stats?.totalAmountOfCollects}
-                            </IconButton>
-
-                        </CardActions>
-                        <Divider flexItem orientation="horizontal" style={{ border: '1px solid gray', marginBottom: "-15px" }} />
-                        {
-                            showComment && style === pub.id && <CommentComponentNFT show={showComment} profile={profile} data={pub} updateMirror={updateMirror} setUpdateMirror={setUpdateMirror} />
-                        }
-                    </Card>
+                    </CardActions>
+                    <Divider flexItem orientation="horizontal" style={{ border: '1px solid gray', marginBottom: "-15px" }} />
+                    {
+                        showComment && style === pub.id && <CommentComponentNFT show={showComment} profile={profile} data={pub} updateMirror={updateMirror} setUpdateMirror={setUpdateMirror} />
+                    }
+                </Card>
             </div>
 
         </>

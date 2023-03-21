@@ -7,13 +7,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { deletePublicaton } from '../../../lensprotocol/MarketPlace/deletePost/delete-publication-type-data';
 
 
-export default function ReporrtModal({ pubId,data }) {
+export default function ReporrtModal({ pubId, data }) {
     const [open, setOpen] = React.useState(false);
     const [type, setType] = React.useState();
     const [reason, setReason] = React.useState();
     const [note, setNote] = useState('');
     const lensAuthContext = React.useContext(LensAuthContext);
-    const { profile, login,update,setUpdate } = lensAuthContext;
+    const { profile, login, update, setUpdate } = lensAuthContext;
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -40,20 +40,20 @@ export default function ReporrtModal({ pubId,data }) {
         setNote('')
 
     }
-    const  handleDeletePublication=async(id)=>{
+    const handleDeletePublication = async (id) => {
         const dd = {
             id: id,
-            address: profile.ownedBy, 
+            address: profile.ownedBy,
             login: login
-        } 
-      const res = await deletePublicaton(dd); 
-      if(res.data.hidePublication === null){ 
+        }
+        const res = await deletePublicaton(dd);
+        if (res.data.hidePublication === null) {
+            handleClose();
+            alert("Post successfully deleted!");
+        }
+        setUpdate(!update);
         handleClose();
-        alert("Post successfully deleted!"); 
-      }
-      setUpdate(!update);
-      handleClose();
-    } 
+    }
 
     const reportType = [
         {
@@ -109,108 +109,111 @@ export default function ReporrtModal({ pubId,data }) {
     ];
     return (
         <>
-        <MenuItem aria-label="share">
-            <div>
-                <FlagIcon onClick={handleClickOpen} />Report
-                <Dialog open={open} onClose={handleClose}>
+            <MenuItem aria-label="share">
+                <div>
+                    <FlagIcon onClick={handleClickOpen} />Report
+                    <Dialog open={open} onClose={handleClose}>
 
-                    <DialogContent>
-                        <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
-                            <InputLabel id="demo-select-small">Select Type</InputLabel>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={type}
-                                // label="Type"
-                                input={<OutlinedInput label="Select Type" />}
-                                onChange={(e) => setType(e.target.value)}
-                            >
-                                {
-                                    reportType.map((e, i) => {
-                                        return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
-                                    })
-                                }
-                            </Select>
-                        </FormControl>
-                        {
-                            type === 'ILLEGAL' &&
+                        <DialogContent>
                             <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
-                                <InputLabel id="demo-select-small">Select Reason</InputLabel>
+                                <InputLabel id="demo-select-small">Select Type</InputLabel>
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
-                                    value={reason}
+                                    value={type}
                                     // label="Type"
-                                    input={<OutlinedInput label="Select Reason" />}
-                                    onChange={(e) => setReason(e.target.value)}
+                                    input={<OutlinedInput label="Select Type" />}
+                                    onChange={(e) => setType(e.target.value)}
                                 >
                                     {
-                                        illegal.map((e, i) => {
+                                        reportType.map((e, i) => {
                                             return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
                                         })
                                     }
                                 </Select>
                             </FormControl>
-                        }
-                        {
-                            type === 'FRAUD' &&
-                            <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
-                                <InputLabel id="demo-select-small">Select Reason</InputLabel>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={reason}
-                                    // label="Type"
-                                    input={<OutlinedInput label="Select Reason" />}
-                                    onChange={(e) => setReason(e.target.value)}
-                                >
-                                    {
-                                        fraud.map((e, i) => {
-                                            return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
-                                        })
-                                    }
-                                </Select>
-                            </FormControl>
-                        }
-                        {
-                            type === 'SENSITIVE' &&
-                            <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
-                                <InputLabel id="demo-select-small">Select Reason</InputLabel>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={reason}
-                                    // label="Type"
-                                    input={<OutlinedInput label="Select Reason" />}
-                                    onChange={(e) => setReason(e.target.value)}
-                                >
-                                    {
-                                        sensitive.map((e, i) => {
-                                            return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
-                                        })
-                                    }
-                                </Select>
-                            </FormControl>
-                        }
-                        <label style={{ marginTop: '20px' }}>Description</label>
-                        <textarea style={{ width: "100%" }} onChange={(e) => setNote(e.target.value)} rows={3} type="text" placeholder="Description" className="description-note" autoFocus="autofocus " />
+                            {
+                                type === 'ILLEGAL' &&
+                                <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
+                                    <InputLabel id="demo-select-small">Select Reason</InputLabel>
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={reason}
+                                        // label="Type"
+                                        input={<OutlinedInput label="Select Reason" />}
+                                        onChange={(e) => setReason(e.target.value)}
+                                    >
+                                        {
+                                            illegal.map((e, i) => {
+                                                return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                            }
+                            {
+                                type === 'FRAUD' &&
+                                <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
+                                    <InputLabel id="demo-select-small">Select Reason</InputLabel>
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={reason}
+                                        // label="Type"
+                                        input={<OutlinedInput label="Select Reason" />}
+                                        onChange={(e) => setReason(e.target.value)}
+                                    >
+                                        {
+                                            fraud.map((e, i) => {
+                                                return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                            }
+                            {
+                                type === 'SENSITIVE' &&
+                                <FormControl sx={{ minWidth: 120, marginTop: '20px' }} size="large" fullWidth>
+                                    <InputLabel id="demo-select-small">Select Reason</InputLabel>
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={reason}
+                                        // label="Type"
+                                        input={<OutlinedInput label="Select Reason" />}
+                                        onChange={(e) => setReason(e.target.value)}
+                                    >
+                                        {
+                                            sensitive.map((e, i) => {
+                                                return <MenuItem key={i} value={e.value} sx={{ textTransform: 'capitalize' }}>{e.name}</MenuItem>
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                            }
+                            <label style={{ marginTop: '20px' }}>Description</label>
+                            <textarea style={{ width: "100%" }} onChange={(e) => setNote(e.target.value)} rows={3} type="text" placeholder="Description" className="description-note" autoFocus="autofocus " />
 
-                    </DialogContent>
-                    <Divider />
-                    <DialogActions>
+                        </DialogContent>
+                        <Divider />
+                        <DialogActions>
 
-                        <Button sx={{ margin: '20px 10px 0 0' }}
-                            style={{ background: '#468f72', color: 'white', textTransform: 'capitalize' }}
-                            onClick={handleReport}
-                        >Report
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        </MenuItem>
-        {
-                    profile?.id === data?.profile?.id  && <MenuItem onClick={()=>handleDeletePublication(data.id)}><IconButton><DeleteIcon style={{ fontSize: "18px" }} /></IconButton><small>Delete</small></MenuItem>
-                }
+                            <Button sx={{ margin: '20px 10px 0 0' }}
+                                style={{ background: '#468f72', color: 'white', textTransform: 'capitalize' }}
+                                onClick={handleReport}
+                            >Report
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            </MenuItem>
+            {
+                profile?.id === data?.profile?.id && <MenuItem onClick={() => handleDeletePublication(data.id)}>
+                    <IconButton>
+                        <DeleteIcon style={{ fontSize: "18px", marginLeft: "-3px" }} />
+                    </IconButton><small>Delete</small></MenuItem>
+            }
         </>
     )
 }

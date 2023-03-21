@@ -79,9 +79,10 @@ export default function ProfileTabs({ id, state }) {
                             {...a11yProps(3)} />
 
 
-                        <Tab icon={< LibraryAddOutlinedIcon />}
+                        <Tab
+                        //  icon={< LibraryAddOutlinedIcon />}
                             iconPosition="start" className='profile-tab'
-                            // label={`(${state.totalCollects})`}
+                            label="NFTs"
                             {...a11yProps(4)} />
                     </Tabs>
                 </Box>
@@ -97,10 +98,7 @@ export default function ProfileTabs({ id, state }) {
                 <TabPanel value={value} index={3}>
                     <New_Profile_Collect id={id} />
                 </TabPanel>
-                <TabPanel
-                    value={value}
-                    index={4}
-                >
+                <TabPanel value={value} index={4}>
                     <NftCollectedInProfile />
                 </TabPanel>
             </Box>

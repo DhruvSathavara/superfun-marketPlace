@@ -1101,13 +1101,15 @@ export const getNFTPublicationByLatest = async () => {
   const result = await explorePublications(query);
   return result.data.explorePublications.items;
 }
-export const getNFTCommentsByLatest = async (pubID) => {
+export const getNFTCommentsByLatest = async (pubId) => {
   const query = {
-    commentsOf: pubID,
-    "sources": ["supernft"],
+    commentsOf: pubId,
+    sources: ["supernft"],
+
   }
-  const result = await explorePublications(query);
-  return result.data.explorePublications.items;
+  const result = await getPublicationsRequest(query);
+  console.log(result);
+  return result.data.publications.items;
 }
 
 const getPostRequest = (request) => {
