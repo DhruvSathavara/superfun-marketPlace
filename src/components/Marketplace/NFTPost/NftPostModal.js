@@ -4,19 +4,11 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChatIcon from '@mui/icons-material/Chat';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { LensAuthContext } from '../../../context/LensContext';
 import { addReactionNft, getReactionsNft, removeReactionNft } from '../../../lensprotocol/MarketPlace/Reaction/addReactionNft';
-import { DoCommentNft, commentGaslessNft } from '../../../lensprotocol/MarketPlace/Comment/DoComment';
-import DeleteIcon from '@mui/icons-material/Delete';
-import OutlinedFlagOutlinedIcon from '@mui/icons-material/OutlinedFlagOutlined';
-import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
 
 import { Button, CardContent, Dialog, DialogActions, DialogContent, TextField, Card, CardHeader, CardActions, IconButton, Typography, Grid, Box, Accordion, AccordionSummary, AccordionDetails, Menu, MenuItem, Avatar, Divider, CircularProgress, CardMedia } from '@mui/material';
-import DisplayComments from '../comment/DisplayComment';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { createMirrorNft, gaslessMirrorNft } from '../../../lensprotocol/MarketPlace/Mirror/Mirror';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ReporrtModal from '../ReportPost/report-modal';
@@ -25,37 +17,28 @@ import { CollectItem } from '../../../lensprotocol/MarketPlace/Collect/collect';
 import ReportModal from '../ReportPost/report-modal';
 import { Stack } from 'react-bootstrap';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
-import MirrorComponent from '../../../components/publications/MirrorComponent';
-import CollectComponent from '../../../components/publications/CollectComponent';
-import CommentComponent from '../../publications/CommentComponent';
 import SwapHorizSharpIcon from '@mui/icons-material/SwapHorizSharp';
 import CommentComponentNFT from '../../publications/CommentComponent-NFT';
 
-export default function DisplayPublications({ pub,key }) {
+export default function DisplayPublications({ pub }) {
+    // console.log(updateData);
     const [pid, setPid] = useState(pub?.id);
     const [likeCount, setLikeCount] = useState(0);
-    const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [likeUp, setLikeUp] = useState(0);
     const [updateLike, setUpdateLike] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [openReport, setOpenReport] = useState(false);
-    const [fileType, setFileType] = useState("img")
-    const [count, setCount] = useState(0);
     const [style, setStyle] = useState("");
     const [showComment, setShowComment] = useState(false);
     const [updateMirror, setUpdateMirror] = useState(false);
-    const [comment, setComments] = useState("");
-    const [displayCmt, setDisplayCmt] = useState([]);
-
 
 
     const lensAuthContext = React.useContext(LensAuthContext);
     const { profile, login, update, setUpdate } = lensAuthContext;
 
     useEffect(() => {
-        getReact();
-    }, [updateLike])
+        getReact(pid);
+    }, [pid,updateLike])
 
     const oppen = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -64,7 +47,6 @@ export default function DisplayPublications({ pub,key }) {
     const handleCllose = () => {
         setAnchorEl(null);
     };
-
 
 
     const Mirror = async () => {
@@ -118,31 +100,38 @@ export default function DisplayPublications({ pub,key }) {
         }
         const id = window.localStorage.getItem("profileId");
         const pId = data?.id;
-        console.log(pId, 'publish id');
+        
         const dd = {
             id: id,
             address: profile.ownedBy,
             publishId: pId,
             login: login
         }
-        let res;
-        if (likeUp === false) {
-            console.log('in add rec');
-            res = await addReactionNft(dd);
-        }
-        else {
-            console.log('in remove rec');
-            res = await removeReactionNft(dd);
 
+        let response = await getReactionsNft(pId);
+        console.log(response?.items);
+        let isLiked = response?.items.filter((e) => e.profile?.id === profile.id)
+        console.log(isLiked, 'is it');
+
+        let res;
+        if (isLiked.length === 0) {
+            res = await addReactionNft(dd);
+            console.log('---add like---',res);
+        } else {
+            res = await removeReactionNft(dd);
+            console.log('---remove like---',res);
         }
-        console.log(res);
-        if (res === undefined) {
-            setUpdateLike(!updateLike);
-        }
+
+        // setPid(pId);
+        // setUpdateLike(!updateLike);
+        await getReact(pId);
     }
 
-    const getReact = async () => {
-        const res = await getReactionsNft(pid);
+    const getReact = async (dip) => {
+
+        console.log('get react is running..');
+        const res = await getReactionsNft(dip);
+        console.log(dip,'pid in get');
 
         if (profile) {
             const like = res.items && res.items.filter((e) => e?.profile.id === profile.id);
@@ -152,6 +141,7 @@ export default function DisplayPublications({ pub,key }) {
                 setLikeUp(true)
             }
         }
+        console.log(res.items.length);
         setLikeCount(res.items.length);
     }
 
@@ -164,8 +154,8 @@ export default function DisplayPublications({ pub,key }) {
     return (
         <>
 
-            <div className='container ' style={{position:"unset"}}>
-                <Card key={key} style={{ borderRadius: "16px" }} className='mainCard mt-4'>
+            <div className='container ' style={{ position: "unset" }}>
+                <Card style={{ borderRadius: "16px" }} className='mainCard mt-4'>
 
                     <CardHeader
 

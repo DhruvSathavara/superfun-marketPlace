@@ -10,6 +10,7 @@ import LoadingCard from './SkeletonCard';
 import DisplayPublications from './NftPostModal';
 import { LensAuthContext } from '../../../context/LensContext';
 import RightNav from '../../../components/RightNav'
+import { getReactionsNft } from '../../../lensprotocol/MarketPlace/Reaction/addReactionNft';
 export default function NewdisplayPublication() {
     const lensAuthContext = React.useContext(LensAuthContext);
     const { NFTPosts, profile } = lensAuthContext;
@@ -21,7 +22,24 @@ export default function NewdisplayPublication() {
     const [isFetching, setIsFetching] = useState(false);
     const [page, setPage] = useState("{\"timestamp\":1,\"offset\":0}");
     const [HasMore, setHasMore] = useState(true);
+    const [updateData, setUpdateData] = useState(false);
     const skele = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const [likeCount, setLikeCount] = useState(0);
+
+
+    React.useEffect(() => {
+        const getReact = async () => {
+            NFTPosts && NFTPosts.map(async (e) => {
+                let rec = await getReactionsNft(e?.id);
+                const count = rec?.items?.length;
+                setLikeCount(count);
+            })
+        }
+        getReact();
+
+    }, [updateData, NFTPosts])
+
+
     return (
         <>
             <div className='container'>
@@ -41,7 +59,9 @@ export default function NewdisplayPublication() {
                                             <ImageListItem
                                                 key={i}
                                             >
-                                                <DisplayPublications key={i} pub={pub} />
+                                                <DisplayPublications
+                                                    pub={pub}
+                                                />
                                             </ImageListItem>
                                         )
                                     }

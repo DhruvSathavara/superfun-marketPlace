@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, CircularProgress, ImageList, ImageListItem, useMediaQuery } from '@mui/material';
 import { LensAuthContext } from '../context/LensContext';
 import { getPublicationByUser } from '../lensprotocol/post/explore/explore-publications';
-import useInfiniteScroll from './useInfiniteScroll';
+// import useInfiniteScroll from './useInfiniteScroll';
 import { Box, useTheme } from '@mui/system';  
 import PostCard from './Cards/PostCard'; 
 import LoadingCard from './assets/SkeletonCard';
@@ -24,10 +24,10 @@ export default function RecipeReviewCard() {
     const [isFetching, setIsFetching] = useState(false);
     const [page, setPage] = useState("{\"timestamp\":1,\"offset\":0}");
     const [HasMore, setHasMore] = useState(true);
-    const [lastElementRef] = useInfiniteScroll(
-        HasMore ? loadMoreItems : () => { },
-        isFetching
-    );
+    // const [lastElementRef] = useInfiniteScroll(
+    //     HasMore ? loadMoreItems : () => { },
+    //     isFetching
+    // );
     React.useEffect(() => {
         loadMoreItems();
     }, [userPosts, update])
@@ -70,7 +70,7 @@ export default function RecipeReviewCard() {
                                 Items && Items.map((item, i) => { 
                                     return (
                                         <ImageListItem
-                                            ref={lastElementRef}
+                                            // ref={lastElementRef}
                                             key={i}
                                             style={{ cursor: 'pointer' }}
                                         >

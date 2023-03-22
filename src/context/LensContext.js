@@ -182,7 +182,7 @@ export const LensAuthContextProvider = (props) => {
       setUserAdd(address);
       const isTokenValid = await refresh();
       if (isTokenValid) {
-        console.log("login: already logged in");
+        // console.log("login: already logged in");
         return;
       }
       const challengeResponse = await generateChallenge(address);

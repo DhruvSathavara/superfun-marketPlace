@@ -141,7 +141,7 @@ mutation($request: ReactionRequest!) {
     removeReaction(request: $request)
   }
 `
-const addReactionRequest = async (request) => {
+const addReactionRequest = (request) => {
   return apolloClient.mutate({
     mutation: gql(ADD_REACTION),
     variables: {
@@ -160,13 +160,12 @@ export const addReactionNft = async (data) => {
 
     await data.login(data.address);
 
-    const result = await addReactionRequest({
-      profileId:profileId,
+    const request = {
+      profileId: profileId,
       reaction: "UPVOTE",
       publicationId: data.publishId
-    })
-    console.log('result', result);
-
+    };
+    const rr = await addReactionRequest(request);
   } catch (error) {
     console.log(error);
   }
@@ -183,40 +182,39 @@ const getReactionReq = (request) => {
 };
 
 export const getReactionsNft = async (id) => {
-  const result = await getReactionReq({ publicationId: id });
-  // console.log('who collected--get reaction: result', result);
+  const request = {publicationId:id}
+  const result = await getReactionReq(request);
   return result.data.whoReactedPublication;
 };
 
-const removeReactionRequest = (request) => {
-  console.log('request==remove', request);
+const removeReactionRequest = (
+  profileId,
+  reaction,
+  publicationId
+) => {
   return apolloClient.mutate({
     mutation: gql(REMOVE_REACTION),
     variables: {
-      request: request
-    }
-  })
-}
+      request: {
+        profileId,
+        reaction,
+        publicationId,
+      },
+    },
+  });
+};
 
 
 
 export const removeReactionNft = async (data) => {
   const profileId = window.localStorage.getItem("profileId");
-  console.log('profileId', profileId);
   if (!profileId) {
     alert('Must define PROFILE_ID in the .env to run this');
   }
 
-  const address = getAddressFromSigner();
-  // console.log('remove reaction: address', address);
+  await data.login(data.address);
 
-  await data.login(address);
-
-  await removeReactionRequest({
-    profileId,
-    reaction: 'UPVOTE',
-    publicationId: data.publishId,
-  });
+  const dd = await removeReactionRequest(profileId, "UPVOTE", data.publishId);
 
   // alert('remove reaction: sucess');
 };
