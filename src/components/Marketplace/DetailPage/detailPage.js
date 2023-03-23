@@ -25,6 +25,8 @@ import CustomizedTables from "./WhoCollectedTable";
 import { deletePublicaton } from "../../../lensprotocol/MarketPlace/deletePost/delete-publication-type-data";
 import CommentComponentNFT from "../../publications/CommentComponent-NFT";
 import { getNFTCommentsByLatest } from "../../../lensprotocol/MarketPlace/getNftPost/GetNftPost";
+
+
 function NftDetailPage() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [pubData, setPubData] = React.useState(null);
@@ -39,18 +41,19 @@ function NftDetailPage() {
     const [showComment, setShowComment] = useState(false);
     const [style, setStyle] = useState("");
     const [updateMirror, setUpdateMirror] = useState(false);
+    const [updateLike, setUpdateLike] = useState(false);
 
     useEffect(() => {
 
         if (param.id !== null && pubData == null) {
-            console.log('in param');
+            // console.log('in param');
             getPubData(param.id);
         }
         async function getPubData(id) {
-            console.log('geting pub data');
-            console.log(id);
+            // console.log('geting pub data');
+            // console.log(id);
             let data = await getpublicationById(id);
-            console.log(data);
+            // console.log(data);
 
             setPubData(data.data.publication);
             await getReact(id);
@@ -59,13 +62,18 @@ function NftDetailPage() {
             setWhoCollectData(whoCollecte);
 
             const nftComment = await getNFTCommentsByLatest(id);
-            console.log(nftComment, 'nft cmts');
+            // console.log(nftComment, 'nft cmts');
 
         }
 
     }, [pid, update])
 
+    // useEffect(() => {
+    //     if(param.id !== null && pubData == null){
+    //         getReact(pid);
 
+    //     }
+    // }, [pid,updateLike])
     const open = Boolean(anchorEl);
 
 
@@ -117,9 +125,9 @@ function NftDetailPage() {
         setUpdate(!update);
 
     }
-    const getReact = async (id) => {
+    const getReact = async (dip) => {
         // console.log('in react');
-        const res = await getReactionsNft(id);
+        const res = await getReactionsNft(dip);
 
         if (profile) {
             const like = res.items && res.items.filter((e) => e?.profile.id === profile.id);
@@ -129,6 +137,7 @@ function NftDetailPage() {
                 setLikeUp(true)
             }
         }
+        console.log(res.items.length,'like in detail');
         setLikeCount(res.items.length);
     }
     const addReactions = async (data) => {
@@ -145,16 +154,23 @@ function NftDetailPage() {
             publishId: pId,
             login: login
         }
+        let response = await getReactionsNft(pId);
+        console.log(response?.items);
+        let isLiked = response?.items.filter((e) => e.profile?.id === profile.id)
+        console.log(isLiked, 'is it');
+
         let res;
-        if (likeUp === false) {
+        if (isLiked.length === 0) {
             res = await addReactionNft(dd);
-        }
-        else {
+            console.log('---add like---',res);
+        } else {
             res = await removeReactionNft(dd);
+            console.log('---remove like---',res);
         }
-        if (res === undefined) {
-            setUpdate(!update);
-        }
+
+        // setPid(pId);
+        // setUpdateLike(!updateLike);
+        await getReact(pId);
     }
 
     const handleDeletePublication = async (id) => {
@@ -227,7 +243,7 @@ function NftDetailPage() {
                                 </Menu>
 
                                 <img
-                                    style={{ height: "500px", width: "735px" }}
+                                    style={{ height: "500px", width: "100%" }}
                                     src={pubData?.metadata?.media[0]?.original?.url}>
 
                                 </img>
@@ -278,8 +294,11 @@ function NftDetailPage() {
                                     <IconButton aria-label="add to favorites"
                                         onClick={() => addReactions(pubData)}
                                     >                                        {
-                                            likeUp === 0 ? <FavoriteIcon  style={{fontSize:"20px"}} /> : <FavoriteIcon  style={{fontSize:"20px"}}/>}
-                                       <sapn style={{fontSize:"20px"}}>{likeCount}</sapn> 
+                                            likeUp === 0 ? <FavoriteIcon style={{ fontSize: "20px" }} /> :
+                                                <FavoriteIcon style={{ fontSize: "20px" }} />}
+                                        <sapn style={{ fontSize: "20px" }}>
+                                            {likeCount}
+                                        </sapn>
                                     </IconButton>
                                     <div
                                         onClick={() => handleShowComment(pubData.id)}
@@ -292,7 +311,7 @@ function NftDetailPage() {
                                         </span>
                                     </div>
                                     <IconButton onClick={Mirror}>
-                                        {likeUp === 0 ? <SwapHorizIcon  style={{fontSize:"20px"}} /> : <SwapHorizIcon  style={{fontSize:"20px"}} />}{pubData?.stats?.totalAmountOfMirrors}
+                                        {likeUp === 0 ? <SwapHorizIcon style={{ fontSize: "20px" }} /> : <SwapHorizIcon style={{ fontSize: "20px" }} />}{pubData?.stats?.totalAmountOfMirrors}
                                     </IconButton>
 
                                     <IconButton onClick={Collect}>
@@ -300,7 +319,7 @@ function NftDetailPage() {
                                             src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy' alt='bg' width="22" />
                                             : <img src='https://superfun.infura-ipfs.io/ipfs/QmWimuRCtxvPhruxxZRBpbWoTXK6HDvLZkrcEPvaqyqegy'
                                                 alt='bg' width="22" />}
-                                       <sapn style={{fontSize:"20px"}}> {pubData?.stats?.totalAmountOfCollects}</sapn>  
+                                        <sapn style={{ fontSize: "20px" }}> {pubData?.stats?.totalAmountOfCollects}</sapn>
                                     </IconButton>
 
                                 </CardActions>
