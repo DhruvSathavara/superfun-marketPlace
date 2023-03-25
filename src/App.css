@@ -176,3 +176,25 @@ color: #eee;
 .test-class div {
   padding: 5px;
 }
+
+.cg-logo{
+  position: absolute;
+  top: 158px;
+  right: 45px;
+  width: 28px;
+}
+.cg-logo.loading {
+  position: absolute;
+  top: 158px;
+  right: 45px;
+  width: 28px;
+  animation: rotation 2s infinite linear !important;
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}

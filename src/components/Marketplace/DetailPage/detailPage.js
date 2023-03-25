@@ -46,24 +46,17 @@ function NftDetailPage() {
     useEffect(() => {
 
         if (param.id !== null && pubData == null) {
-            // console.log('in param');
             getPubData(param.id);
         }
         async function getPubData(id) {
-            // console.log('geting pub data');
-            // console.log(id);
             let data = await getpublicationById(id);
-            // console.log(data);
 
             setPubData(data.data.publication);
             await getReact(id);
             const whoCollecte = await whoCollected(id);
-            // console.log(whoCollecte);
             setWhoCollectData(whoCollecte);
 
             const nftComment = await getNFTCommentsByLatest(id);
-            // console.log(nftComment, 'nft cmts');
-
         }
 
     }, [pid, update])
@@ -332,6 +325,8 @@ function NftDetailPage() {
                                         <CommentComponentNFT
                                             show={showComment}
                                             profile={profile}
+                                            update={update}
+                                            setUpdate={setUpdate}
                                             data={pubData}
                                             updateMirror={updateMirror}
                                             setUpdateMirror={setUpdateMirror} />}

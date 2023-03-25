@@ -9,28 +9,29 @@ import { getPublicationByLatest } from "../lensprotocol/post/explore/explore-pub
 import { toast } from "react-toastify";
 import { profileByAddress } from "../lensprotocol/profile/get-profile";
 import { collectedPubByAddress, getNFTCommentsByLatest, getNFTMirrorByLatest, getNftPostByPubId, getNFTPublicationByLatest } from "../lensprotocol/MarketPlace/getNftPost/GetNftPost";
- 
+import axios from "axios";
 
-export const LensAuthContext = createContext(undefined); 
-export const LensAuthContextProvider = (props) => { 
-  const [open, setOpen] = useState(false); 
+
+export const LensAuthContext = createContext(undefined);
+export const LensAuthContextProvider = (props) => {
+  const [open, setOpen] = useState(false);
   const [userAdd, setUserAdd] = useState("");
   const [profile, setProfile] = useState("");
   const [update, setUpdate] = useState(false);
   const [likeUpdate, setLikeUpdate] = useState(false);
-  const [userPosts, setUserPosts] = useState([]); 
-  const [NFTPosts, setNFTPosts] = useState([]); 
-  const [NFTCollected, setNFTCollected] = useState([]); 
+  const [userPosts, setUserPosts] = useState([]);
+  const [NFTPosts, setNFTPosts] = useState([]);
+  const [NFTCollected, setNFTCollected] = useState([]);
   // console.log(NFTCollected,'nft coll');
-  const [NFTMirroredPost, setNFTMirroredPosts] = useState([]); 
+  const [NFTMirroredPost, setNFTMirroredPosts] = useState([]);
   const id = window.localStorage.getItem("profileId");
-  const [updatePro,setUpdatePro]= useState(false)
- 
+  const [updatePro, setUpdatePro] = useState(false)
+
 
   useEffect(() => {
     async function getProfile() {
       if (id !== null) {
-        const user = await profileById(id); 
+        const user = await profileById(id);
         setProfile(user);
         const nftPosts = await getNFTPublicationByLatest();
         setNFTPosts(nftPosts);
@@ -40,36 +41,44 @@ export const LensAuthContextProvider = (props) => {
         const collects = await collectedPubByAddress()
         let arr = []
         for (let i = 0; i < collects[0].length; i++) {
-          
-          if(collects[0][i].appId === "supernft"){
+
+          if (collects[0][i].appId === "supernft") {
             arr.push(collects[0][i]);
           }
         }
         setNFTCollected(arr);
       }
-      
+
 
     };
     getProfile();
     getPosts();
-  }, [userAdd, update,updatePro]);
+  }, [userAdd, update, updatePro]);
 
- useEffect(() => {
+  useEffect(() => {
 
- },[likeUpdate]) 
+  }, [likeUpdate])
   async function getPosts() {
     let array = [];
-    const post =  await posts(id); 
-    const data = await getPublicationByLatest();   
-   const latestPosts= data.data && data.data.explorePublications.items.map((e) => {  
+    const post = await posts(id);
+    const data = await getPublicationByLatest();
+    const latestPosts = data.data && data.data.explorePublications.items.map((e) => {
       // array.push(e);
       return e;
     })
     setUserPosts(latestPosts);
   }
- 
 
-
+  const handlePromptSubmit = async (prompt) => {
+    await axios
+      .post("http://localhost:5555/chat", { prompt })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 
 
   const AUTHENTICATION = `
@@ -243,7 +252,8 @@ export const LensAuthContextProvider = (props) => {
         setOpen,
         NFTPosts,
         NFTMirroredPost,
-        NFTCollected
+        NFTCollected,
+        handlePromptSubmit,
       }}
       {...props}
     >

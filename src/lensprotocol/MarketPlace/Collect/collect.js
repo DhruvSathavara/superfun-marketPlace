@@ -14,7 +14,6 @@ export const CollectItem = async (data) => {
     }
     await data.login(data.address);
 
-    // const allow = await allowance();
     const result = await approveModule(data.value);
     console.log('allowance result',result);
     try {

@@ -32,6 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faImages, faFileVideo, faFileText } from '@fortawesome/free-regular-svg-icons'
 import CancelIcon from '@mui/icons-material/Cancel';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import axios from 'axios';
 
 const auth =
     "Basic " +
@@ -110,12 +111,32 @@ export default function UploadModal() {
     const [tags, setTags] = React.useState([]);
     const [file, setFile] = React.useState("");
     const [loading, setLoading] = React.useState(false);
-    const [selectFile, setSelectFile] = React.useState("image");
+    const [GPTloading, setGPTLoading] = React.useState(false);
+
     const openAndSetOpen = React.useContext(LensAuthContext);
 
     const { open, setOpen } = openAndSetOpen;
     const inputRef = React.useRef();
     const [source, setSource] = React.useState("");
+
+    const startWithsfs = description.startsWith('super:');
+    const handlePromptSubmit = async (e) => {
+        if (e.key === '@') {
+            if (startWithsfs) {
+                e.preventDefault();
+                setGPTLoading(true);
+                axios.post("http://localhost:5555/chat", { description })
+                    .then((res) => {
+                        console.log(res.data);
+                        setDescription(res.data);
+                        setGPTLoading(false);
+                    })
+                    .catch((err) => { console.error(err); });
+            }
+        }
+    }
+
+
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -123,15 +144,6 @@ export default function UploadModal() {
         const imageURI = `https://superfun.infura-ipfs.io/ipfs/${ipfsResult.path}`;
         setSource(imageURI);
     };
-
-    const handleSelectFile = (e) => {
-        setSelectFile(e.target.value);
-        if (e.target.value === "image") {
-            setSource("");
-        } else {
-            setFile("");
-        }
-    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -237,9 +249,29 @@ export default function UploadModal() {
                     <div>
                         <input onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Title" className="title" /><br></br>
                         {
-                            file === "" && source === "" && <textarea onChange={(e) => setDescription(e.target.value)} rows={3} type="text" placeholder="Take a Note..." className="take-note" autoFocus="autofocus " />
+
+                            file === "" && source === "" &&
+                            <div>
+
+                                <textarea
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    onKeyDown={handlePromptSubmit}
+                                    value={description}
+                                    rows={3}
+                                    type="text"
+                                    id='takeNote'
+                                    placeholder="Type... or startwih 'super: ' & end with '@' for Chatbot experience :)"
+                                    className="take-note"
+                                    autoFocus="autofocus " />
+                                <img src="./assets/chatGPT.png" alt=''
+                                    className={GPTloading ? 'cg-logo loading' : 'cg-logo'}
+                                >
+                                </img>
+                            </div>
 
                         }
+
+
                         <input onKeyUp={event => addTags(event)} type="text" placeholder='#Add Tags' className="take-note" /><br></br>
                     </div>
 
@@ -252,7 +284,6 @@ export default function UploadModal() {
                                     key={index}
                                     onDelete={() => removeTags(index)}
                                 />
-
                             ))}
                         </div>
                     </Stack>

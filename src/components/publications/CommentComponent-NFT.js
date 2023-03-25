@@ -13,8 +13,7 @@ function CommentComponentNFT({ show, profile, data, updateMirror, setUpdateMirro
     const [displayCmt, setDisplayCmt] = useState([]);
 
     const lensAuthContext = React.useContext(LensAuthContext);
-    const { login, loginCreate } = lensAuthContext;
-    const [update, setUpdate] = useState(false);
+    const { login, loginCreate,update,setUpdate } = lensAuthContext;
 
     useEffect(() => {
         getComm();
@@ -60,9 +59,12 @@ function CommentComponentNFT({ show, profile, data, updateMirror, setUpdateMirro
                 console.log('gasless');
                 res = await commentGaslessNft(commentData);
                 setUpdate(!update)
+                setLoading(false);
             } else {
                 res = await DoCommentNft(commentData)
                 setUpdate(!update)
+                setLoading(false);
+
             }
         }
     }

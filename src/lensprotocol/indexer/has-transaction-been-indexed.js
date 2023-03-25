@@ -95,11 +95,12 @@ const sleep = (milliseconds) => {
 };
 
 export const pollUntilIndexed = async (txHash) => {
+  console.log(txHash,"txHash");
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const result = await hasTxBeenIndexed(txHash); 
     const response = result.data.hasTxHashBeenIndexed;  
-    console.log(response,"response");
+    console.log(response,"res");
     if (response.__typename === "TransactionIndexedResult") { 
 
       if (response.metadataStatus) {
